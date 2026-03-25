@@ -5,23 +5,27 @@ namespace App\GraphQL\Types;
 
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-use App\GraphQL\Types\AttributeType;
-use App\GraphQL\Types\ProductType;
 
-/**
- * GraphQL type for a single item in an order
- * Includes the product, quantity, and selected attributes
- */
 class OrderItemType extends ObjectType
 {
+    private static ?self $instance = null;
+
+    public static function getInstance(): self
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
     public function __construct()
     {
         parent::__construct([
             'name'   => 'OrderItem',
             'fields' => [
-                'product' => ProductType::getInstance(),              // Product object
-                'quantity' => Type::nonNull(Type::int()),           // Quantity ordered
-                'attributes' => Type::listOf(AttributeType::getInstance()), // Selected product attributes
+                'product'    => ProductType::getInstance(),
+                'quantity'   => Type::nonNull(Type::int()),
+                'attributes' => Type::listOf(AttributeType::getInstance()),
             ],
         ]);
     }

@@ -47,7 +47,7 @@ export default function ProductList({ addToCart }) {
         const result = await response.json();
 
         if (result.errors) {
-          console.error("GraphQL errors:", result.errors);
+          console.error("GraphQL errors:", JSON.stringify(result.errors, null, 2));
           throw new Error("Failed to fetch products");
         }
 

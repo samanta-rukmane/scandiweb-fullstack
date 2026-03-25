@@ -1,6 +1,5 @@
 import CartItem from "./CartItem";
 
-// Вспомогательная функция для получения цены
 const getPrice = (item) =>
   item.prices?.[0]?.amount ??
   item.product?.prices?.[0]?.amount ??
@@ -26,7 +25,10 @@ export default function CartOverlay({
 
     const query = `
       mutation CreateOrder($items: [OrderItemInput!]!, $total: Float!) {
-        createOrder(items: $items, total: $total)
+        createOrder(items: $items, total: $total) {
+          id
+          total
+        }
       }
     `;
 
@@ -56,7 +58,7 @@ export default function CartOverlay({
         console.error("GraphQL errors:", JSON.stringify(json.errors, null, 2));
       }
 
-      if (json.data?.createOrder) {
+      if (json.data?.createOrder?.id) {
         clearCart();
         onClose();
       } else {

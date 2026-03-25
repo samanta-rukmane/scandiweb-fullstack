@@ -56,7 +56,7 @@ class GraphQL
             $input['variables'] ?? null
         );
 
-        $output = $result->toArray();
+        $output = $result->toArray(\GraphQL\Error\DebugFlag::INCLUDE_DEBUG_MESSAGE | \GraphQL\Error\DebugFlag::INCLUDE_TRACE);
         } catch (Throwable $e) {
             // Return safe JSON for production
             http_response_code(500);
@@ -122,12 +122,12 @@ class GraphQL
             'name'   => 'Mutation',
             'fields' => [
                 'createOrder' => [
-                    'type' => Type::boolean(),
+                    'type' => OrderType::getInstance(),
                     'args' => [
                         'items' => Type::nonNull(Type::listOf(Type::nonNull($orderItemInputType))),
                         'total' => Type::nonNull(Type::float())
                     ],
-                    'resolve' => fn($root, $args) => $this->orderRepository->create($args['items'], $args['total']) ? true : false
+                    'resolve' => fn($root, $args) => $this->orderRepository->create($args['items'], $args['total'])
                 ]
             ]
         ]);
@@ -149,7 +149,7 @@ class GraphQL
     // Initialize GraphQL types
     private function initTypes(): void
     {
-        $this->productType  = new ProductType();
+        $this->productType  = ProductType::getInstance();
         $this->categoryType = new CategoryType();
     }
 }

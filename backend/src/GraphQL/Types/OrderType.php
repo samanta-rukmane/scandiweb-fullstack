@@ -1,24 +1,41 @@
 <?php
+declare(strict_types=1);
 
 namespace App\GraphQL\Types;
 
+use App\Models\Order;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
-/**
- * GraphQL type for an order
- * Contains the order ID, list of items, and total price
- */
 class OrderType extends ObjectType
 {
+    private static ?self $instance = null;
+
+    public static function getInstance(): self
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+
     public function __construct()
     {
         parent::__construct([
             'name'   => 'Order',
             'fields' => [
-                'id' => Type::nonNull(Type::string()),                 // Unique order identifier
-                'items' => Type::listOf(new OrderItemType()),          // List of items in the order
-                'total' => Type::nonNull(Type::float()),              // Total price of the order
+                'id' => [
+                    'type'    => Type::nonNull(Type::int()),
+                    'resolve' => fn($order) => $order instanceof Order ? $order->getId() : null,
+                ],
+                'total' => [
+                    'type'    => Type::nonNull(Type::float()),
+                    'resolve' => fn($order) => $order instanceof Order ? $order->getTotal() : 0,
+                ],
+                'items' => [
+                    'type'    => Type::listOf(OrderItemType::getInstance()),
+                    'resolve' => fn($order) => $order instanceof Order ? $order->getItems() : [],
+                ],
             ],
         ]);
     }
