@@ -1,0 +1,5 @@
+backend/.env
+backend/.env.local.bak
+backend/vendor
+frontend/node_modules
+.git
