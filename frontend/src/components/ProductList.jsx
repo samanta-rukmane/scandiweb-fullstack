@@ -38,7 +38,7 @@ export default function ProductList({ addToCart }) {
           ? `{ products { ${PRODUCT_FIELDS} } }`
           : `{ productsByCategory(category: "${categorySlug}") { ${PRODUCT_FIELDS} } }`;
 
-        const response = await fetch("http://localhost:8000/graphql", {
+        const response = await fetch(import.meta.env.VITE_GRAPHQL_URL || "http://localhost:8000/graphql", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query }),

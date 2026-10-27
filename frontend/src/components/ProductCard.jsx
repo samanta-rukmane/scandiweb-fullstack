@@ -2,8 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function ProductCard({ product, addToCart }) {
   const image = product.gallery?.[0];
-
-  // Берём первую цену
+  
   const firstPrice = product.prices?.[0];
   const priceSymbol = firstPrice?.currency?.symbol ?? "$";
   const priceAmount = firstPrice?.amount ?? 0;
